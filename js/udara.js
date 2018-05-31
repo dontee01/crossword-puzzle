@@ -1,7 +1,30 @@
-task = ['o', 's', 'an'];
-sec = ['s', 'o', 'an'];
+// task = ['o', 's', 'an'];
+// sec = ['s', 'o', 'an'];
 
-obj = shuffle(task);
+ipele = [
+	[
+		['o', 'w', 'u', 'r', 'o'],
+		['i', 'd', 'a', 'j', 'i'],
+		['o', 's', 'an'],
+		['a', 's', 'a', 'l', 'e'],
+		['a', 'l', 'e'],
+		['o', 'g', 'an', 'j', 'o']
+	],
+	[
+		['o', 'w', 'u', 'r', 'o'],
+		['i', 'd', 'a', 'j', 'i'],
+		['o', 's', 'an'],
+		['a', 's', 'a', 'l', 'e'],
+		['a', 'l', 'e'],
+		['o', 'g', 'an', 'j', 'o']
+	]
+];
+
+level_counter = 0;
+stage_counter = 0;
+total_stages = 0;
+
+// obj = shuffle(task);
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -47,46 +70,54 @@ function isClone(arr1, val){
 }
 // var is_same = isIdentical(task, obj);
 // console.dir(is_same);
+function load_level()
+{
+	var row = $('<tr></tr>');
+    var counter = 0;
 
-$(document).ready(function(){
-	var s = "100$";
-	(function(){
-		console.log()
-		var s = "44$";
-		alert(s);
-	})();
-	var foo = function bar() {
-		console.log(typeof bar());
-	};
-	var x = { company: 'xyz'};
-	var em = Object.create(x);
-	delete em.company
-	alert(em.company);
-	// var obj = shuffle(task);
+    total_stages = ipele[level_counter].length;
+
+    var task = ipele[level_counter][stage_counter];
+
+	var obj = shuffle(task);
 
 	// var is_same = (task.length === obj.length) && task.every(function(element, index) {
 	//     return element === obj[index]; 
 	// });
-	// ss = obj
-	// var is_same = isIdentical(task, ss);
-	// alert('Track: '+is_same);
-	// if (task == obj)
-	// {
-	// 	// alert('Track: equals');
-	// }
-	// console.dir(obj);
-	// console.dir(is_same);
-
-	// Draw grid
-    var row = $('<tr></tr>');
-    var counter = 0;
-	$.each(sec,function(i){
-    	// $(row).append('<td class="square empty"></td>');
-    	$(row).append('<td>'
-    		+'<button class="btn btn-default" id="val'+counter+'" class="square letter" data-number="'+sec[i]+'" contenteditable="false">'+sec[i]+'</button></td>');
+	$.each(obj,function(i){
+		// stage_counter += 1;
+		$(row).append('<td>'
+    		+'<button class="btn btn-default" id="val'+counter+'" class="square letter" data-number="'+obj[i]+'" contenteditable="false">'+obj[i]+'</button></td>');
     	counter ++;
+
+    	// level_counter += 1;
+    	
     });
     $("#puzzle").append(row);
+
+    $("#level").html("Level: " + (level_counter + 1) + ", Stage: " + (stage_counter + 1));
+
+    return {"task" : task, "sec" : obj};
+}
+
+$(document).ready(function(){
+	// var s = "100$";
+	// (function(){
+	// 	console.log()
+	// 	var s = "44$";
+	// 	alert(s);
+	// })();
+	// var foo = function bar() {
+	// 	console.log(typeof bar());
+	// };
+	// var x = { company: 'xyz'};
+	// var em = Object.create(x);
+	// delete em.company
+	// alert(em.company);
+	
+
+	// Draw grid
+	var loaded = load_level();
 
     count_answer = 0;
     ans_str = '';
@@ -98,18 +129,20 @@ $(document).ready(function(){
     	$(this).attr('disabled', true);
 
     	count_answer ++;
-    	if (count_answer == sec.length)
+    	if (count_answer == loaded.sec.length)
     	{
     		// ans_str = $('#answer').text();
-    		var is_correct = isClone(task, ans_str);
+    		var is_correct = isClone(loaded.task, ans_str);
     		// console.log(ans_str);
     		if (is_correct == 1)
     		{
-    			alert('Corrcect! Move to Level 2');
+    			alert('Corrcect! Move to Stage 2');
     			$('td button').attr('disabled', false);
     			$('#answer').text('');
     			count_answer = 0;
     			ans_str = '';
+    			stage_counter += 1;
+    			load_level();
     		}
     		else
     		{
